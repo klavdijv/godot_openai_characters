@@ -1,0 +1,87 @@
+[gd_scene load_steps=8 format=3 uid="uid://c4yviek7o4rqr"]
+
+[ext_resource type="Script" path="res://scenes/ui/test_ui.gd" id="1_xn10y"]
+[ext_resource type="Script" path="res://scripts/ai_functions.gd" id="3_tne1r"]
+[ext_resource type="Script" path="res://resources/ai_function.gd" id="4_sy1b5"]
+[ext_resource type="Script" path="res://resources/ai_func_parameter.gd" id="5_8ie7p"]
+[ext_resource type="PackedScene" uid="uid://c0u1h67w7fkbl" path="res://scenes/ai_character.tscn" id="6_1haw6"]
+
+[sub_resource type="Resource" id="Resource_1kgtn"]
+script = ExtResource("5_8ie7p")
+parameter_name = "door_name"
+parameter_type = "string"
+parameter_description = "door to open"
+parameter_enum = Array[String]([])
+required = true
+
+[sub_resource type="Resource" id="Resource_s1cnx"]
+script = ExtResource("4_sy1b5")
+function_name = "open_door"
+description = "open the door"
+parameters = Array[ExtResource("5_8ie7p")]([SubResource("Resource_1kgtn")])
+
+[node name="TestUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xn10y")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MessageEdit" type="TextEdit" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 5.0
+placeholder_text = "message"
+wrap_mode = 1
+
+[node name="SendButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+text = "Send"
+
+[node name="MessageOutput" type="Label" parent="PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 30)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 6.0
+autowrap_mode = 3
+
+[node name="CedricTheButler" parent="." instance=ExtResource("6_1haw6")]
+character_name = "Cedric"
+character_description = "You are friendly butler."
+
+[node name="OpenDoor" type="Node" parent="CedricTheButler"]
+script = ExtResource("3_tne1r")
+functions = Array[ExtResource("4_sy1b5")]([SubResource("Resource_s1cnx")])
+
+[node name="YorickTheWise" parent="." instance=ExtResource("6_1haw6")]
+script = null
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/HBoxContainer/SendButton" to="." method="_on_send_button_pressed"]
+[connection signal="function_called" from="CedricTheButler" to="." method="_on_cedric_the_butler_function_called"]
+[connection signal="got_text" from="CedricTheButler" to="." method="_on_cedric_the_butler_got_text"]
+[connection signal="stream_finished" from="CedricTheButler" to="." method="_on_cedric_the_butler_stream_finished"]
+
+[editable path="CedricTheButler"]
+[editable path="YorickTheWise"]

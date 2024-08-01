@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0u1h67w7fkbl"]
+
+[ext_resource type="Script" path="res://ws/ws_client.gd" id="1_1b82b"]
+[ext_resource type="Script" path="res://scenes/ai_character.gd" id="1_x24oy"]
+
+[node name="AICharacter" type="Node"]
+script = ExtResource("1_x24oy")
+
+[node name="WSClient" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_1b82b")
+handler = "openai_chat_mem"
+
+[connection signal="got_data" from="WSClient" to="." method="_on_ws_client_got_data"]
