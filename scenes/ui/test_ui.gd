@@ -31,10 +31,16 @@ func _on_cedric_the_butler_stream_finished() -> void:
 	%MessageOutput.text += '\n'
 
 
-func _on_cedric_the_butler_function_called(function_name: String, arguments: Dictionary) -> void:
+func _on_cedric_the_butler_function_called(function_name: String, arguments: Dictionary, call_id: String) -> void:
+	var res: String
 	prints(function_name, arguments)
 	if function_name == 'open_door':
-		open_door(arguments['door_name'])
+		res = open_door(arguments['door_name'])
+	await get_tree().process_frame
+	AIMessageBus.send_tool_call_result(call_id, res)
 	
-func open_door(door_name: String) -> void:
-	$CedricTheButler.send_message('notify me that the %s door was open' % door_name, false)
+func open_door(door_name: String) -> String:
+	prints('Open', door_name)
+	if door_name.to_lower().contains('main'):
+		return 'This door cannot be opened. It is jammed.'
+	return 'Doors are open'
